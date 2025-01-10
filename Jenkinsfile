@@ -20,6 +20,14 @@ pipeline {
                 '''
             }
         }
+        stage ("Test") {
+            steps{
+            sh '''
+                ls build/index.html
+                npm test
+            '''
+            }
+        }
         stage('w/o docker') {
             steps {
                 sh '''
