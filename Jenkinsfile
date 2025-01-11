@@ -27,7 +27,6 @@ pipeline {
                 '''
             }
         }
-        commented
         */
         stage ("Test") {
             agent{
@@ -43,6 +42,20 @@ pipeline {
                 # in shell - usual # can be used to comment
                 npm test
             '''
+            }
+        }
+        stage (E2E) {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.1-jammy'
+                }
+            }
+            steps {
+                sh '''
+                    npm install -g serve
+                    serve -s build
+                    npx playwright test
+                '''
             }
         }
         stage('w/o docker') {
