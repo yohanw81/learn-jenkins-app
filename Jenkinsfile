@@ -2,7 +2,14 @@ pipeline {
     agent any
 
     stages {
-        stage ('Build') {
+        // This is a single line comment
+        /*
+        This
+        is
+        a multi line block comment
+        you can use the block comments to disable a stage
+        */
+        /*stage ('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -20,6 +27,7 @@ pipeline {
                 '''
             }
         }
+        */
         stage ("Test") {
             agent{
                 docker {
@@ -31,6 +39,7 @@ pipeline {
             echo 'Running the Test Stage...'
             sh '''
                 test -f build/index.html
+                # in shell - usual # can be used to comment
                 npm test
             '''
             }
