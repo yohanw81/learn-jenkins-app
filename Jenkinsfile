@@ -28,37 +28,41 @@ pipeline {
             }
         }
         */
-        stage ("Test") {
-            agent{
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
+        stage ("Run Tests") {
+            parallel {
+                stage ("Unit Test") {
+                    agent{
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+                    steps{
+                        echo 'Running the Test Stage...'
+                        sh '''
+                            test -f build/index.html
+                            # in shell - usual # can be used to comment
+                            npm test
+                        '''
+                    }
                 }
-            }
-            steps{
-            echo 'Running the Test Stage...'
-            sh '''
-                test -f build/index.html
-                # in shell - usual # can be used to comment
-                npm test
-            '''
-            }
-        }
-        stage (E2E) {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true
-                    // to run command as root -> args '-u  root:root' //
+                stage (E2E) {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                            // to run command as root -> args '-u  root:root' //
+                        }
+                    }
+                    steps {
+                        sh '''
+                            npm install serve 
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                            npx playwright test --reporter=html
+                        '''
+                    }
                 }
-            }
-            steps {
-                sh '''
-                    npm install serve 
-                    node_modules/.bin/serve -s build &
-                    sleep 10
-                    npx playwright test --reporter=html
-                '''
             }
         }
         stage('w/o docker') {
