@@ -98,6 +98,11 @@ pipeline {
                 '''
             }
         }
+        stage('Approval for Production Upgrade') {
+            steps {
+                input message: 'Ready to Deploy to Production', ok: 'Yes, I am sure!'
+            }
+        }
         stage ('Deploy Production') {
             agent {
                 docker {
