@@ -79,6 +79,7 @@ pipeline {
                 }
             }
         }
+        /*
         stage ('Deploy Staging') {
             agent {
                 docker {
@@ -97,6 +98,7 @@ pipeline {
                 '''
             }
         }
+        */
         stage ('Deploy Production') {
             agent {
                 docker {
