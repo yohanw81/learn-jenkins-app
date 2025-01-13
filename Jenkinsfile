@@ -108,9 +108,11 @@ pipeline {
             }
             steps {
                 sh '''
+                    netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
+                    netlify link
                     echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify deploy --dir=build --prod
                     echo "Git Poling Test"
