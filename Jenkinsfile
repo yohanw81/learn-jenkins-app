@@ -90,7 +90,7 @@ pipeline {
                 sh '''
                     ping -c 10 objects.githubusercontent.com
                     nslookup objects.githubusercontent.com
-                    node -e "const https = require('https'); https.get('https://objects.githubusercontent.com', (res) => console.log('Success', res.statusCode)).on('error', console.error);"
+                    node -e "const https = require('https');https.get('https://objects.githubusercontent.com', (res) => {  console.log('Success', res.statusCode);}).on('error', console.error);"
                     npm install netlify-cli node-jq --loglevel verbose'
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
