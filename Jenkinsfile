@@ -96,9 +96,9 @@ pipeline {
                     node_modules/.bin/netlify deploy --dir=build --json > build-output.json
                     echo "Git Poling Test"
                 '''
-                    script {
-                        env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' build-output.json", returnStdout: true)
-                    }
+                script {
+                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' build-output.json", returnStdout: true)
+                }
             }
         }
         stage ("Staging E2E") {
