@@ -88,12 +88,12 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm install netlify-cli node-jq --loglevel verbose
+                    npm install netlify-cli
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
+                    npm install node-jq
                     node_modules/.bin/netlify deploy --dir=build --json > build-output.json
                     echo "Git Poling Test"
                 '''
