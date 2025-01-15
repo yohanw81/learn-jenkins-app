@@ -88,6 +88,9 @@ pipeline {
             }
             steps {
                 sh '''
+                    ping objects.githubusercontent.com
+                    nslookup objects.githubusercontent.com
+                    curl -I https://objects.githubusercontent.com
                     npm install netlify-cli node-jq --retry 3
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
