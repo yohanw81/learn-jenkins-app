@@ -94,9 +94,32 @@ pipeline {
                     node_modules/.bin/netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify deploy --dir=build --json > build-output.json
-                    node_modules/.bin/node-jq -r '.deploy_url' build-output.json
                     echo "Git Poling Test"
                 '''
+            }
+            script {
+                env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' build-output.json", returnStdout true)
+            }
+        }
+        stage ("Staging E2E") {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+             }
+             environment {
+                CI_ENVIRONMENT_URL = $env.STAGING_URL
+            }
+            steps {
+                sh '''
+                    npx playwright test --reporter=html
+                '''
+            }
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'Staging-report', reportFiles: 'index.html', reportName: 'Playwright Prod Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
             }
         }
         stage('Approval for Production Upgrade') {
@@ -142,7 +165,7 @@ pipeline {
             }
             post {
                 always {
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod Report', reportTitles: '', useWrapperFileDirectly: true])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'Prod-report', reportFiles: 'index.html', reportName: 'Playwright Prod Report', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
         }
