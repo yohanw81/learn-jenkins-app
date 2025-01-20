@@ -15,11 +15,6 @@ pipeline {
         a multi line block comment
         you can use the block comments to disable a stage
         */
-        stage ('Docker') {
-            steps {
-                sh 'docker build -t my-playwright .'
-            }
-        }
         stage ('Build') {
             agent {
                 docker {
