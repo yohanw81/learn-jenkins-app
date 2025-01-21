@@ -18,7 +18,8 @@ pipeline {
         stage ('AWS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    /*image 'amazon/aws-cli' -- for the latest amazon cocket image*/
+                    image 'amazon/aws-cli:2.23.2' /* for a specific version */
                     args "--entrypoint=''"
                 }
             }
