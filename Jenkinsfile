@@ -15,6 +15,18 @@ pipeline {
         a multi line block comment
         you can use the block comments to disable a stage
         */
+        stage ('AWS') {
+            agent {
+                docker {
+                    image: 'amazon/aws-cli'
+                }
+            steps {
+                sh '''
+                    aws --version
+                '''
+            }
+            }
+        }
         stage ('Build') {
             agent {
                 docker {
