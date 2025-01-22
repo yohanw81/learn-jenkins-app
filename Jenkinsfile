@@ -84,7 +84,7 @@ pipeline {
                 docker {
                     image 'amazon/aws-cli'
                     reuseNode true
-                    args "--entrypoint=''"
+                    args "-u root --entrypoint=''"
                 }
             }
             steps {
@@ -92,8 +92,10 @@ pipeline {
                     sh '''
                     set -e
                     aws --version
-                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
-                    aws ecs update-service --cluster Jenkins-Cluster-Prod --service lernJenkinsApp-TaskDef-SRV-Prod --task-definition LearJenkinsApp-TaskDefinition-Prod:2
+                    yum install jq -y
+                    LATEST_TASK_DEF_REV = $(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
+                    echo $LATEST_TASK_DEF_REV
+                    aws ecs update-service --cluster Jenkins-Cluster-Prod --service lernJenkinsApp-TaskDef-SRV-Prod --task-definition LearJenkinsApp-TaskDefinition-Prod:$LATEST_TASK_DEF_REV
                     '''
                 }
                 
