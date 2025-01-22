@@ -90,6 +90,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-s3-access', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
+                    set -e
                     aws --version
                     aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
                     aws ecs update-service --cluster Jenkins-Cluster-Prod --service lernJenkinsApp-TaskDef-SRV-Prod --task-definition LearJenkinsApp-TaskDefinition-Prod:2
