@@ -5,6 +5,7 @@ pipeline {
         NETLIFY_SITE_ID = '5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be'
         NETLIFY_AUTH_TOKEN = credentials('netifly-token-id')
         REACT_APP_VERSION = "1.0.$BUILD_ID"
+        AWS_DEFAULT_REGION = 'ap-southeast-1'
     }
 
     stages {
@@ -73,6 +74,24 @@ pipeline {
                     aws --version
                     aws s3 sync build s3://$AWS_S3_BUCKET
                     aws s3 ls
+                    '''
+                }
+                
+            }
+        }
+        stage ('AWS - Deploy to AWS Elastic Cluster') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "--entrypoint=''"
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws-s3-access', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                    aws --version
+                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
                     '''
                 }
                 
