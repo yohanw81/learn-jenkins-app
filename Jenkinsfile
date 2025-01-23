@@ -60,10 +60,24 @@ pipeline {
                 '''
             }
         }
+        stage ('Build Docker Image') {
+            agent {
+                docker {
+                    image 'my-aws-cli'
+                    reuseNode true
+                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
+                }
+            }
+            steps {
+                sh '''
+                    docker build -t myjenkinsapp .
+                '''
+            }
+        }
         stage ('AWS - Deploy to AWS S3') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'my-aws-cli'
                     reuseNode true
                     args "--entrypoint=''"
                 }
@@ -85,7 +99,7 @@ pipeline {
         stage ('AWS - Deploy to AWS Elastic Cluster') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'my-aws-cli'
                     reuseNode true
                     args "-u root --entrypoint=''"
                 }
@@ -95,7 +109,6 @@ pipeline {
                     sh '''
                     set -e
                     aws --version
-                    yum install jq -y
                     LATEST_TASK_DEF_REV=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                     echo $LATEST_TASK_DEF_REV
                     aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE_PROD --task-definition $AWS_ECS_TASK_DEF:$LATEST_TASK_DEF_REV
@@ -103,21 +116,6 @@ pipeline {
                     '''
                 }
                 
-            }
-        }
-        stage ('Build Docker Image') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli'
-                    reuseNode true
-                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
-                }
-            }
-            steps {
-                sh '''
-                    amazon-linux-extras install docker
-                    docker build -t myjenkinsapp .
-                '''
             }
         }
         stage ("Run Tests") {
