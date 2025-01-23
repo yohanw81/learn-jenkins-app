@@ -115,7 +115,7 @@ pipeline {
                     sh '''
                     set -e
                     aws --version
-                    sed -i aws/task-definition-prod.json "s/#APP_VERSION#/$REACT_APP_VERSION/g" 
+                    sed -i "s/#APP_VERSION#/$REACT_APP_VERSION/g" aws/task-definition-prod.json
                     LATEST_TASK_DEF_REV=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                     echo $LATEST_TASK_DEF_REV
                     aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE_PROD --task-definition $AWS_ECS_TASK_DEF:$LATEST_TASK_DEF_REV
