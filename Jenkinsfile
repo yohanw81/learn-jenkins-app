@@ -141,27 +141,27 @@ pipeline {
                         }
                     }
                 }
-                //stage (E2E) {
-                //    agent {
-                //        docker {
-                //            image 'my-playwright'
-                //            reuseNode true
-                            // to run command as root -> args '-u  root:root' //
-                 //       }
-                //   }
-                //    steps {
-                //       sh '''
-                //           serve -s build &
-                //            sleep 10
-                //          npx playwright test --reporter=html
-                //      '''
-                //  }
-                //  post {
-                //      always {
-                //          publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
-                //      }
-                //  }
-                //}
+                stage (E2E) {
+                    agent {
+                        docker {
+                            image 'my-playwright'
+                            reuseNode true
+                            //to run command as root -> args '-u  root:root' //
+                        }
+                   }
+                    steps {
+                       sh '''
+                           serve -s build &
+                            sleep 10
+                          npx playwright test --reporter=html
+                       '''
+                  }
+                  post {
+                      always {
+                          publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
+                      }
+                  }
+                }
             }
         }
         //stage ("Deploy Staging") {
