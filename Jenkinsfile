@@ -165,60 +165,60 @@ pipeline {
                 }
             }
         }
-        //stage ("Deploy Staging") {
-        //    agent {
-        //        docker {
-        //            image 'my-playwright'
-        //            reuseNode true
-        //        }
-        //     }
-        //    environment {
-        //        CI_ENVIRONMENT_URL = "STAGING_URL_TO_BE_SET"
-        //    }
-        //    steps {
-        //        sh '''
-        //            netlify --version
-        //            netlify status
-        //           netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
-        //            echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
-        //            netlify deploy --dir=build --json > build-output.json
-        //            CI_ENVIRONMENT_URL=$(jq -r '.deploy_url' build-output.json)
-        //            npx playwright test --reporter=html
-        //        '''
-        //    }
-        //    post {
-        //        always {
-        //            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Staging Report', reportTitles: '', useWrapperFileDirectly: true])
-        //        }
-        //    }
-        //}
-        //stage ("Prod Deployement") {
-        //    agent {
-        //        docker {
-        //            image 'my-playwright'
-        //            reuseNode true
-        //        }
-        //     }
-        //     environment {
-        //        CI_ENVIRONMENT_URL = 'https://grand-eclair-f65c7d.netlify.app'
-        //    }
-        //    steps {
-        //        sh '''
-        //            node --version
-        //            netlify --version
-        //            netlify status
-        //            netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
-        //            echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
-        //            netlify deploy --dir=build --prod
-        //            npx playwright test --reporter=html
-        //        '''
-        //    }
-        //    post {
-        //        always {
-        //            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod Report', reportTitles: '', useWrapperFileDirectly: true])
-        //        }
-        //    }
-        //}
+        stage ("Deploy Staging") {
+            agent {
+                docker {
+                    image 'my-playwright'
+                    reuseNode true
+                }
+             }
+            environment {
+                CI_ENVIRONMENT_URL = "STAGING_URL_TO_BE_SET"
+            }
+            steps {
+                sh '''
+                    netlify --version
+                    netlify status
+                   netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
+                    echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
+                    netlify deploy --dir=build --json > build-output.json
+                    CI_ENVIRONMENT_URL=$(jq -r '.deploy_url' build-output.json)
+                    npx playwright test --reporter=html
+                '''
+            }
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Staging Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+        }
+        stage ("Prod Deployement") {
+            agent {
+                docker {
+                    image 'my-playwright'
+                    reuseNode true
+                }
+             }
+             environment {
+                CI_ENVIRONMENT_URL = 'https://grand-eclair-f65c7d.netlify.app'
+            }
+            steps {
+                sh '''
+                    node --version
+                    netlify --version
+                    netlify status
+                    netlify link --id 5738d3e7-9e4b-49bc-8da0-c3b44d8cc8be
+                    echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
+                    netlify deploy --dir=build --prod
+                    npx playwright test --reporter=html
+                '''
+            }
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+        }
         stage('w/o docker') {
             steps {
                 sh '''
