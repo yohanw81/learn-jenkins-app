@@ -105,6 +105,11 @@ pipeline {
                 
             }
         }
+        stage ('Nightly Docker Build') {
+            steps {
+                sh 'docker build -t myjenkinsapp .'
+            }
+        }
         stage ("Run Tests") {
             parallel {
                 stage ("Unit Test") {
